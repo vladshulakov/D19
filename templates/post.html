@@ -13,12 +13,13 @@ Post
                <td>Дата создания</td>
                <td>Автор</td>
            </tr>
+           {% for r in replys %}
            <tr>
-               <td>{{ reply.reply_text }}</a></td>
-               <td>{{ reply.time_create|date:'d M Y' }}</td>
-               <td>{{ reply.user }}</td>
+               <td>{{ r.reply_text }}</a></td>
+               <td>{{ r.time_create|date:'d M Y' }}</td>
+               <td>{{ r.user }}</td>
            </tr>
-
+           {% endfor %}
        </table>
    {% else %}
        <h2>Откликов нет!</h2>
