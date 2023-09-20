@@ -6,27 +6,4 @@ Reply
 
 {% block content %}
 <h1>{{ reply }}</h1>
-{% if posts %}
-        <table class="table table-bordered">
-            <tr>
-               <td>Заголовок</td>
-               <td>Текст</td>
-               <td>Категория</td>
-               <td>Дата создания</td>
-               <td>Автор</td>
-            </tr>
-            {% for post in posts %}
-            <tr>
-               <td><a href="{% url 'post' post.id %}">{{ post.post_title }}</a></td>
-               <td>{{ post.post_text|truncatechars:20 }}</td>
-               <td>{{ post.category }}</td>
-               <td>{{ post.time_create|date:'d M Y' }}</td>
-               <td>{{ post.user }}</td>
-            </tr>
-            {% endfor %}
-
-        </table>
-    {% else %}
-       <h2>Объявлений нет!</h2>
-    {% endif %}
 {% endblock content %}
