@@ -21,6 +21,14 @@ class PostDetail(DetailView):
     context_object_name = 'post'
     form_class = ReplyForm
 
+    def get_context_data(self, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+        comments = Reply.objects.filter(accepted=True, post=self.Post)
+        context['comments'] = comments
+
+        return context
+
 class ReplyDetail(DetailView):
     model = Reply
     template_name = 'reply.html'
