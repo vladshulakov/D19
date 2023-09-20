@@ -32,6 +32,7 @@ class Post(models.Model):
     time_create = models.DateTimeField(auto_now_add=True)
     category = models.CharField(max_length=3, choices=CATEGORY, default=tanks)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    post_replys = models.ManyToManyField('Reply', through='PostReplys')
 
     def __str__(self):
         return self.post_title
@@ -41,7 +42,7 @@ class Reply(models.Model):
     reply_text = models.TextField()
     time_create = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, null=True)
+    post_reply = models.ForeignKey(Post, on_delete=models.CASCADE, null=True)
     accepted = models.BooleanField(default=False)
 
     def accept(self):
@@ -49,3 +50,8 @@ class Reply(models.Model):
 
     def __str__(self):
         return self.reply_text
+    
+
+class PostReplys(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    reply = models.ForeignKey(Reply, on_delete=models.CASCADE)

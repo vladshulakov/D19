@@ -6,14 +6,14 @@ Post
 
 {% block content %}
     <h1>{{ post }}</h1>
-    {% if replys %}
+    {% if post.post_replys %}
        <table class="table table-bordered">
            <tr>
                <td>Текст</td>
                <td>Дата создания</td>
                <td>Автор</td>
            </tr>
-           {% for r in replys %}
+           {% for r in post.post_replys.all %}
            <tr>
                <td>{{ r.reply_text }}</a></td>
                <td>{{ r.time_create|date:'d M Y' }}</td>
