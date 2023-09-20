@@ -5,6 +5,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, UpdateView, DeleteView, CreateView
 from django.contrib.auth.decorators import login_required
 from .models import Post, Reply
+from .forms import ReplyForm
 
 
 class PostList(ListView):
@@ -18,6 +19,7 @@ class PostDetail(DetailView):
     model = Post
     template_name = 'post.html'
     context_object_name = 'post'
+    form_class = ReplyForm
 
 class ReplyDetail(DetailView):
     model = Reply

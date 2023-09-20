@@ -48,8 +48,6 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
 ]
 
-LOGIN_URL = '/accounts/login/'
-
 SITE_ID = 1
 
 MIDDLEWARE = [
@@ -159,3 +157,15 @@ ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+
+EMAIL_HOST = 'smtp.yandex.ru' 
+EMAIL_PORT = 465  
+EMAIL_HOST_USER = 'iamrock'  
+EMAIL_HOST_PASSWORD = 'sodfwynglgatvszo' 
+EMAIL_USE_SSL = True 
+
+DEFAULT_FROM_EMAIL = 'iamrock@yandex.ru'
+
+LOGIN_URL = '/accounts/login/'
+LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/'
