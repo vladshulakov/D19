@@ -5,7 +5,9 @@ Post
 {% endblock title %}
 
 {% block content %}
-    <h1>{{ post }}</h1>
+    <h1>{{ post.post_title }}</h1>
+    <h2>{{ post.post_text }}</h2>
+    <h3>{{ post.time_create|date:'d M Y' }}</h3>
     {% if comments %}
        <table class="table table-bordered">
            <tr>

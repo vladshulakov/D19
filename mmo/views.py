@@ -24,7 +24,7 @@ class PostDetail(DetailView):
     def get_context_data(self, **kwargs):
 
         context = super().get_context_data(**kwargs)
-        comments = Reply.objects.filter(accepted=True, post=self.Post)
+        comments = Reply.objects.filter(accepted=True, post_id=self.kwargs['pk'])
         context['comments'] = comments
 
         return context
@@ -36,6 +36,6 @@ class ReplyDetail(DetailView):
 
 class ReplyList(ListView):
     model = Reply
-    template_name = 'replys.html'
+    template_name = 'replies.html'
     ordering = '-time_create'
-    context_object_name = 'replys'
+    context_object_name = 'replies'
