@@ -1,12 +1,13 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, UpdateView, DeleteView, CreateView
 from django.contrib.auth.decorators import login_required
 from .models import Post, Reply
 from .forms import ReplyForm, PostForm
 from .filters import PostFilter
+from django.views.generic.edit import FormMixin
 
 
 class PostList(ListView):
@@ -21,10 +22,14 @@ class PostList(ListView):
         self.filterset = PostFilter(self.request.GET, queryset)
         return self.filterset.qs
 
-class PostDetail(DetailView):
+class PostDetail(FormMixin, DetailView):
     model = Post
     template_name = 'post.html'
+    form_class = ReplyForm
     context_object_name = 'post'
+
+    def get_success_url(self):
+        return reverse('post', kwargs={'pk': self.object.pk})
 
     def get_context_data(self, **kwargs):
 
@@ -33,6 +38,18 @@ class PostDetail(DetailView):
         context['comments'] = comments
 
         return context
+    
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        if form.is_valid():
+            reply = form.save(commit=False)
+            reply.post = self.object
+            reply.user = self.request.user
+            reply.save()
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)   
 
 class ReplyDetail(DetailView):
     model = Reply
@@ -75,11 +92,12 @@ class ReplyCreate(LoginRequiredMixin, CreateView):
     template_name = 'reply_edit.html'
 
     def form_valid(self, form):
-        self.object = form.save(commit=False)
-        current_user = self.request.user
-        self.object.user = current_user
-        self.object.send_notification_email()
-        return super().form_valid(form)
+        reply = form.save(commit=False)
+        reply.post = Post.objects.get(pk=self.kwargs['pk'])
+        reply.user = self.request.user
+        reply.send_notification_email()
+        reply.save()
+        return redirect('post', pk=reply.post.pk)
 
 class PostUpdate(LoginRequiredMixin, UpdateView):
     form_class = PostForm
