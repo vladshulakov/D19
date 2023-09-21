@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     # ... include the providers you want to enable:
     'allauth.socialaccount.providers.google',
+    'django_filters',
 ]
 
 SITE_ID = 1

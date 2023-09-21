@@ -7,10 +7,20 @@
 <body>
 {% block content %}
     <h2 style="text-align: center;">Отклики на мои объявления</h2>
+    <form method="get">
+        <select name="post">
+            <option value="">Все объявления</option>
+            {% for post in posts %}
+                <option value="{{ post.pk }}" {% if selected_post_id == post.pk %}selected{% endif %}>{{ post.post_title }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Фильтр</button>
+    </form>
     <hr>
         {% if replies %}
         <table class="table table-bordered">
             <tr>
+                <td>Объявление</td>
                 <td>Текст</td>
                 <td>Дата создания</td>
                 <td>Автор</td>
@@ -19,8 +29,9 @@
             </tr>
             {% for reply in replies %}
             <tr>
-                <td>{{ reply.reply_text }}</a></td>
-                <td>{{ reply.time_create|date:'d M Y' }}</td>
+                <td>{{ reply.post }}</td>
+                <td>{{ reply.reply_text }}</td>
+                <td>{{ reply.time_create|date:'H:m d M Y' }}</td>
                 <td>{{ reply.user }}</td>
                 <td>
                     {% if reply.accepted %}
@@ -34,10 +45,8 @@
             {% endfor %}
         </table>
         {% else %}
-        <h2>У вас нет объявлений, Вы можете добавить новое</h2>
+        <h2>У вас нет откликов</h2>
         {% endif %}
-    <br>
-    <a href="{% url 'post_create' %}">Добавить объявление</a>
 {% endblock content %}
 </body>
 </html>

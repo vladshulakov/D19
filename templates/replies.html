@@ -17,7 +17,7 @@ Replies
            {% for r in replies %}
            <tr>
                <td>{{ r.reply_text }}</a></td>
-               <td>{{ r.time_create|date:'d M Y' }}</td>
+               <td>{{ r.time_create|date:'H:m d M Y' }}</td>
                <td>{{ r.user }}</td>
            </tr>
            {% endfor %}

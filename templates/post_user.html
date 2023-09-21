@@ -9,7 +9,7 @@
 <h1>Моё объявление</h1>
 <h2>{{ post_user.post_title }}</h2>
 <h2>{{ post_user.post_text }}</h2>
-<h3>{{ post_user.time_create|date:'d M Y' }}</h3>
+<h3>{{ post_user.time_create|date:'H:m d M Y' }}</h3>
 <br>
 <a href="{% url 'post_delete' post_user.id %}">Удалить объявление</a>
 <br>
@@ -26,7 +26,7 @@
        {% for r in comments %}
        <tr>
            <td>{{ r.reply_text }}</a></td>
-           <td>{{ r.time_create|date:'d M Y' }}</td>
+           <td>{{ r.time_create|date:'H:m d M Y' }}</td>
            <td>{{ r.user }}</td>
        </tr>
        {% endfor %}

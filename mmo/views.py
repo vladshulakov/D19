@@ -6,6 +6,7 @@ from django.views.generic import ListView, DetailView, UpdateView, DeleteView, C
 from django.contrib.auth.decorators import login_required
 from .models import Post, Reply
 from .forms import ReplyForm, PostForm
+from .filters import PostFilter
 
 
 class PostList(ListView):
@@ -15,6 +16,11 @@ class PostList(ListView):
     context_object_name = 'posts'
     paginate_by = 10
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        self.filterset = PostFilter(self.request.GET, queryset)
+        return self.filterset.qs
+
 class PostDetail(DetailView):
     model = Post
     template_name = 'post.html'
@@ -23,7 +29,7 @@ class PostDetail(DetailView):
     def get_context_data(self, **kwargs):
 
         context = super().get_context_data(**kwargs)
-        comments = Reply.objects.filter(accepted=True, post_id=self.kwargs['pk'])
+        comments = Reply.objects.filter(accepted=True, post_id=self.kwargs['pk']).order_by('time_create')
         context['comments'] = comments
 
         return context
@@ -47,7 +53,7 @@ class PostDetailUser(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
 
         context = super().get_context_data(**kwargs)
-        comments = Reply.objects.filter(accepted=True, post_id=self.kwargs['pk'])
+        comments = Reply.objects.filter(accepted=True, post_id=self.kwargs['pk']).order_by('time_create')
         context['comments'] = comments
 
         return context
@@ -102,18 +108,24 @@ def user_posts(request):
 def user_replies(request):
     current_user = request.user
     posts = Post.objects.filter(user=current_user).order_by('-time_create')
+    selected_post_id = request.GET.get('post')
 
-    replies = Reply.objects.filter(post__user = current_user)
+    replies = Reply.objects.filter(post__user = current_user).order_by('-time_create')
+    if selected_post_id:
+        replies = replies.filter(post__id=selected_post_id)
 
-    return render(request, 'user_replies.html', {'posts': posts, 'replies': replies})
+    if request.method == 'GET':
+        selected_post_id = request.GET.get('post')
+        if selected_post_id:
+            replies = replies.filter(post__id=selected_post_id)
+
+    return render(request, 'user_replies.html', {'posts': posts, 'replies': replies, 'selected_post_id': selected_post_id})
 
 
 @login_required
 def accept_reply(request, pk):
     reply = get_object_or_404(Reply, pk=pk)
-    if request.method == 'POST':
-        reply.accepted = True
-        reply.save()
-        reply.send_accepted_email()
-        return HttpResponseRedirect(reverse('user_replies'))
+    reply.accepted = True
+    reply.save()
+    reply.send_accepted_email()
     return HttpResponseRedirect(reverse('user_replies'))
