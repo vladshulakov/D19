@@ -92,12 +92,12 @@ class ReplyCreate(LoginRequiredMixin, CreateView):
     template_name = 'reply_edit.html'
 
     def form_valid(self, form):
-        reply = form.save(commit=False)
-        reply.post = Post.objects.get(pk=self.kwargs['pk'])
-        reply.user = self.request.user
-        reply.send_notification_email()
-        reply.save()
-        return redirect('post', pk=reply.post.pk)
+        self.object = form.save(commit=False)
+        self.object.post = Post.objects.get(pk=self.kwargs['pk'])
+        current_user = self.request.user
+        self.object.user = current_user
+        self.object.send_notification_email()
+        return super().form_valid(form)
 
 class PostUpdate(LoginRequiredMixin, UpdateView):
     form_class = PostForm
