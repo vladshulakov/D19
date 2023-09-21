@@ -35,6 +35,8 @@ class Post(models.Model):
     time_create = models.DateTimeField(auto_now_add=True)
     category = models.CharField(max_length=3, choices=CATEGORY, default=tanks)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    image = models.ImageField(upload_to='post_images/', null=True, blank=True)
+    video_url = models.URLField(null=True, blank=True)
 
     def get_absolute_url(self):
         return reverse('post', args=[str(self.id)])

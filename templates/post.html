@@ -8,6 +8,12 @@ Post
     <h1>Объявление</h1>
     <h2>{{ post.post_title }}</h2>
     <h2>{{ post.post_text }}</h2>
+    {% if object.image %}
+    <img src="{{ object.image.url }}" alt="{{ object.title }}">
+    {% endif %}
+    {% if object.video_url %}
+    <iframe width="560" height="315" src="{{ object.video_url }}" frameborder="0" allowfullscreen></iframe>
+    {% endif %}
     <h3>{{ post.time_create|date:'H:m d M Y' }}</h3>
     <br>
     <h2>Отклики:</h2>
