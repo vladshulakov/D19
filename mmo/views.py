@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, UpdateView, DeleteView, CreateView
 from django.contrib.auth.decorators import login_required
@@ -46,6 +46,7 @@ class PostDetail(FormMixin, DetailView):
             reply = form.save(commit=False)
             reply.post = self.object
             reply.user = self.request.user
+            reply.send_notification_email()
             reply.save()
             return self.form_valid(form)
         else:
@@ -96,7 +97,6 @@ class ReplyCreate(LoginRequiredMixin, CreateView):
         self.object.post = Post.objects.get(pk=self.kwargs['pk'])
         current_user = self.request.user
         self.object.user = current_user
-        self.object.send_notification_email()
         return super().form_valid(form)
 
 class PostUpdate(LoginRequiredMixin, UpdateView):
