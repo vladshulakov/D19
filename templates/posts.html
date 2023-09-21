@@ -30,7 +30,9 @@ Posts
     {% else %}
        <h2>Объявлений нет!</h2>
     {% endif %}
-
+    <a href="{% url 'post_create' %}">Добавить объявление</a>
+    <br>
+    <br>
     {% if page_obj.has_previous %}
         <a href="?page=1">1</a>
             {% if page_obj.previous_page_number != 1 %}

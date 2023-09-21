@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.core.mail import send_mail
 from django.conf import settings
+from django.urls import reverse
 
 tanks = 'TNK'
 hils = 'HIL'
@@ -35,6 +36,9 @@ class Post(models.Model):
     category = models.CharField(max_length=3, choices=CATEGORY, default=tanks)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
 
+    def get_absolute_url(self):
+        return reverse('post', args=[str(self.id)])
+
     def __str__(self):
         return self.post_title
 
@@ -62,9 +66,8 @@ class Reply(models.Model):
 
         send_mail(subject, message, from_email, recipient_list)
 
-    def accept(self):
-        self.accepted = True
-        self.send_accepted_email()
+    def get_absolute_url(self):
+        return reverse('posts')
 
     def __str__(self):
         return self.reply_text
